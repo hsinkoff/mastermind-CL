@@ -4,8 +4,9 @@ class Game
     @array =[["blue","blue","blue","blue"]]
     @correct_place = []
     @correct_color = []
-    @final_array = []
-    @partial_array =[]
+    @final_array = [nil, nil, nil, nil]
+    @partial_array = []
+    @color_array = []
     puts "Welcome to Mastermind!\nPlease think of a four color code using the following colors:
       \n#{@colors[0]}\n#{@colors[1]}\n#{@colors[2]}\n#{@colors[3]}\n#{@colors[4]}\n#{@colors[5]}\n\n"
   end
@@ -26,26 +27,86 @@ class Game
   end
 
   def color_check
-    if @correct_place[@correct_place.length - 1] == "4"
-      return
-    end
     @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
-    if @total == 4
-      @final_array = @array
+    if @color_array.length.to_i + @final_array.compact.length.to_i == 4
+      return
+    elsif @color_array.empty?
+      (@total - @final_array.compact.length.to_i).times do |add|
+        @color_array << @colors[@correct_place.length - 1] 
+      end
     else
-      (@total - @final_array.length).times do |enter|
-        @final_array << @colors[@correct_place.length - 1]
+      (@total - @final_array.compact.length.to_i - 1).times do |add|
+        @color_array << @colors[@correct_place.length - 1]
       end
     end
-    @partial_array << @final_array
-    while @partial_array.flatten.length < 4
-      (4 - @partial_array.flatten.length).times do |enter|
-        @partial_array << @colors[@correct_place.length]
+  end
+
+  def correct_places
+    if @correct_place.length >= 2
+      if @correct_color[@correct_color.length - 1] == "0" && (@correct_place[@correct_place.length - 1].to_i - @final_array.compact.length.to_i) >= 1
+        @final_array[(@array[-1].index((@color_array[0])).to_i)] = @color_array.shift
       end
     end
-    @array << @partial_array.flatten!
+    puts @color_array
+    puts "_____"
+    puts @final_array
+  end
+
+  def fill_in_known
+    if !@final_array.compact.empty?
+      @partial_array << @final_array[0] << @final_array[1] << @final_array[2] << @final_array[3]
+    end
+    if @partial_array.length < 4
+      (4 - @partial_array.length).times do |add|
+        @partial_array << nil
+      end
+    end
+    if !@color_array.empty?
+      if @array[-1].include?(@color_array[0])
+        @partial_array[(@array[-1].index(@color_array[0]))] = @color_array[0]
+      else
+        if @partial_array[0] == nil
+          @partial_array[0] = @color_array[0]
+        elsif @partial_array[1] == nil
+          @partial_array[1] = @color_array[0]
+        elsif @partial_array[2] == nil
+          @partial_array[2] = @color_array[0]
+        elsif @partial_array[3] == nil
+          @partial_array[3] = @color_array[0]
+        end 
+      end
+    end
+  end
+
+  def reorder
+    #if color is right but not in correct place
+  #  after round 2 if cc = 1 
+  #  if @partial_array[@partial_array.index(@color_array[0]) + 1] == nil && @partial_array.index(@color_array[0] + 1) < 4
+  #    @partial_array[@partial_array.index(@color_array[0]) + 1] = @color_array[0]
+  #  elsif @partial_array[@partial_array.index(@color_array[0]) + 2] == nil && @partial_array.index(@color_array[0] + 2) < 4
+  #    @partial_array[@partial_array.index(@color_array[0]) + 2] = @color_array[0]
+  #  elsif etc.
+  #  end
+  #    @partial_array[@partial_array.index(@color_array[0])] = nil
+    
+  end
+
+  def color_fill
+    @partial_array.each_index do |index|
+      if @partial_array[index] == nil
+        if @color_array.length.to_i + @final_array.compact.length.to_i == 4
+          @partial_array[index] = "grey"
+        elsif @correct_place.length > 5
+          @partial_array[index] = "grey"
+        else
+          @partial_array[index] = @colors[@correct_place.length]
+        end
+      end
+    end
+    @array << @partial_array
     @partial_array = []
   end
+
 
   def game_over
     if @correct_place[@correct_place.length - 1] == "4"
@@ -55,7 +116,7 @@ class Game
     end
     puts "Would you like to play again (y or n)?"
     answer = $stdin.gets.chomp
-    if answer == "y" || answer = "Y"
+    if answer == "y" || answer == "Y"
       game = Game.new
       self.complete_game(game)
     else
@@ -63,37 +124,36 @@ class Game
     end
   end
 
+  def complete_round(game)
+    game.round
+    game.color_check
+    game.correct_places
+    game.fill_in_known
+    game.reorder
+    game.color_fill
+  end
+
   def complete_game(game)
     #round 1
-    game.round
-    game.color_check
+    complete_round(game)
     #round 2
-    game.round
-    game.color_check
+    complete_round(game)
     #round 3
-    game.round
-    game.color_check
+    complete_round(game)
     #round 4
-    game.round
-    game.color_check
+    complete_round(game)
     #round 5
-    game.round
-    game.color_check
+    complete_round(game)
     #round 6
-    game.round
-    game.color_check
+    complete_round(game)
     #round 7
-    game.round
-    game.color_check
+    complete_round(game)
     #round 8
-    game.round
-    game.color_check
+    complete_round(game)
     #round 9
-    game.round
-    game.color_check
+    complete_round(game)
     #round 10
-    game.round
-    game.color_check
+    complete_round(game)
     game.game_over
   end
 end
