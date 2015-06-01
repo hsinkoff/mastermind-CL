@@ -1,7 +1,7 @@
 class Game
   def initialize
-    @colors = ["blue", "green", "red", "yellow", "white", "black"]
-    @array =[["blue","blue","blue","blue"]]
+    @colors = ["red", "green", "orange", "yellow", "blue", "purple"]
+    @array =[["red","red","red","red"]]
     @correct_place = []
     @correct_color = []
     @final_array = [nil, nil, nil, nil]
@@ -43,6 +43,7 @@ class Game
 
   def correct_places
     if @correct_place.length >= 2
+      #to be updated
       if @correct_color[@correct_color.length - 1] == "0" && (@correct_place[@correct_place.length - 1].to_i - @final_array.compact.length.to_i) >= 1
         @final_array[(@array[-1].index((@color_array[0])).to_i)] = @color_array.shift
       end
@@ -79,16 +80,12 @@ class Game
   end
 
   def reorder
-    #if color is right but not in correct place
-  #  after round 2 if cc = 1 
-  #  if @partial_array[@partial_array.index(@color_array[0]) + 1] == nil && @partial_array.index(@color_array[0] + 1) < 4
-  #    @partial_array[@partial_array.index(@color_array[0]) + 1] = @color_array[0]
-  #  elsif @partial_array[@partial_array.index(@color_array[0]) + 2] == nil && @partial_array.index(@color_array[0] + 2) < 4
-  #    @partial_array[@partial_array.index(@color_array[0]) + 2] = @color_array[0]
-  #  elsif etc.
-  #  end
-  #    @partial_array[@partial_array.index(@color_array[0])] = nil
-    
+    if @correct_color.length >= 2
+      if @correct_color[@correct_color.length - 1] != 0
+        @partial_array[(@partial_array.index(@color_array[0]).to_i + 1)] = @color_array[0]
+        @partial_array[@partial_array.index(@color_array[0]).to_i] = nil  
+      end
+    end
   end
 
   def color_fill
