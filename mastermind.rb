@@ -49,9 +49,6 @@ class Game
         end
       end
     end
-    puts @color_array
-    puts "_____"
-    puts @final_array
   end
 
   def fill_in_known
@@ -91,9 +88,11 @@ class Game
     @partial_array.each_index do |index|
       if @partial_array[index] == nil
         if @color_array.length.to_i + @final_array.compact.length.to_i == 4
-          @partial_array[index] = "grey"
+          @partial_array[index] = ((@colors - @color_array) - @final_array)[-1]
         elsif @correct_place.length > 5
-          @partial_array[index] = "grey"
+          puts "Oops, you must have gotten confused.\nYour answers tell me that your code doesn't follow the rules."
+          restart
+          return       
         else
           @partial_array[index] = @colors[@correct_place.length]
         end
@@ -105,7 +104,6 @@ class Game
 
   def final_round
     if @final_array.compact.length == 3
-      puts "ok"
       @final_array.each_index do |index|
         if @final_array[index] == nil
           @final_array[index] = @color_array.shift
@@ -131,9 +129,13 @@ class Game
     end
   end
 
+  def restart
+    game = Game.new
+    self.complete_game(game)
+  end
+
   def complete_round(game)
     game.round
-   
     game.correct_places
     game.color_check
     game.fill_in_known
