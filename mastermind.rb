@@ -30,22 +30,23 @@ class Game
     @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
     if @color_array.length.to_i + @final_array.compact.length.to_i == 4
       return
-    elsif @color_array.empty?
-      (@total - @final_array.compact.length.to_i).times do |add|
+    elsif @color_array.empty? #&& @final_array.compact.length == 0
+      @total.times do |add|
         @color_array << @colors[@correct_place.length - 1] 
       end
-    else
-      (@total - @final_array.compact.length.to_i - 1).times do |add|
+    elsif !@color_array.empty?
+      (@total - 1).times do |add|
         @color_array << @colors[@correct_place.length - 1]
       end
     end
   end
 
   def correct_places
-    if @correct_place.length >= 2
-      #to be updated
-      if @correct_color[@correct_color.length - 1] == "0" && (@correct_place[@correct_place.length - 1].to_i - @final_array.compact.length.to_i) >= 1
-        @final_array[(@array[-1].index((@color_array[0])).to_i)] = @color_array.shift
+    if @correct_place.length >= 2 && @color_array.length >= 1
+      if @correct_color[@correct_color.length - 1] == "0"
+        if @correct_place[@correct_place.length - 1] >=
+          @final_array[(@array[-1].index((@color_array[0])).to_i)] = @color_array.shift
+        end
       end
     end
     puts @color_array
@@ -54,9 +55,6 @@ class Game
   end
 
   def fill_in_known
-    if !@final_array.compact.empty?
-      @partial_array << @final_array[0] << @final_array[1] << @final_array[2] << @final_array[3]
-    end
     if @partial_array.length < 4
       (4 - @partial_array.length).times do |add|
         @partial_array << nil
@@ -77,6 +75,7 @@ class Game
         end 
       end
     end
+
   end
 
   def reorder
@@ -104,6 +103,17 @@ class Game
     @partial_array = []
   end
 
+  def final_round
+    if @final_array.compact.length == 3
+      puts "ok"
+      @final_array.each_index do |index|
+        if @final_array[index] == nil
+          @final_array[index] = @color_array.shift
+        end
+      end
+      @array << @final_array
+    end
+  end
 
   def game_over
     if @correct_place[@correct_place.length - 1] == "4"
@@ -123,11 +133,13 @@ class Game
 
   def complete_round(game)
     game.round
-    game.color_check
+   
     game.correct_places
+    game.color_check
     game.fill_in_known
     game.reorder
     game.color_fill
+    game.final_round
   end
 
   def complete_game(game)
