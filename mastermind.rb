@@ -1,12 +1,12 @@
 class Game
   def initialize
-    @array =[["red","red","red","red"]]
-    @final_array = [nil, nil, nil, nil]
+    @guess =[["red","red","red","red"]]
+    @final_guess = [nil, nil, nil, nil]
     @correct_color = []
     @correct_place = []
     @color_array = []
     @colors = ["red", "green", "orange", "yellow", "blue", "purple"]
-    @partial_array = []
+    @partial_guess = []
   end
 
   def welcome
@@ -20,7 +20,7 @@ class Game
     if @correct_place[@correct_place.length - 1] == "4"
       return
     end
-    puts "My guess is: #{@array[-1][-4]}, #{@array[-1][-3]}, #{@array[-1][-2]}, #{@array[-1][-1]}"
+    puts "My guess is: #{@guess[-1][-4]}, #{@guess[-1][-3]}, #{@guess[-1][-2]}, #{@guess[-1][-1]}"
     puts "How many are in the correct place?"
     @correct_place << $stdin.gets.chomp.to_s
     if @correct_place[@correct_place.length - 1] == "4"
@@ -33,7 +33,7 @@ class Game
 
   def color_check
     @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
-    if @color_array.length.to_i + @final_array.compact.length.to_i == 4
+    if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
       return
     elsif @color_array.empty?
       @total.times do |add|
@@ -50,30 +50,30 @@ class Game
     if @correct_place.length >= 2 && @color_array.length >= 1
       if @correct_color[@correct_color.length - 1] == "0"
         if @correct_place[@correct_place.length - 1] >= "1"
-          @final_array[(@array[-1].index((@color_array[0])).to_i)] = @color_array.shift
+          @final_guess[(@guess[-1].index((@color_array[0])).to_i)] = @color_array.shift
         end
       end
     end
   end
 
   def fill_in_known
-    if @partial_array.length < 4
-      (4 - @partial_array.length).times do |add|
-        @partial_array << nil
+    if @partial_guess.length < 4
+      (4 - @partial_guess.length).times do |add|
+        @partial_guess << nil
       end
     end
     if !@color_array.empty?
-      if @array[-1].include?(@color_array[0])
-        @partial_array[(@array[-1].index(@color_array[0]))] = @color_array[0]
+      if @guess[-1].include?(@color_array[0])
+        @partial_guess[(@guess[-1].index(@color_array[0]))] = @color_array[0]
       else
-        if @partial_array[0] == nil
-          @partial_array[0] = @color_array[0]
-        elsif @partial_array[1] == nil
-          @partial_array[1] = @color_array[0]
-        elsif @partial_array[2] == nil
-          @partial_array[2] = @color_array[0]
-        elsif @partial_array[3] == nil
-          @partial_array[3] = @color_array[0]
+        if @partial_guess[0] == nil
+          @partial_guess[0] = @color_array[0]
+        elsif @partial_guess[1] == nil
+          @partial_guess[1] = @color_array[0]
+        elsif @partial_guess[2] == nil
+          @partial_guess[2] = @color_array[0]
+        elsif @partial_guess[3] == nil
+          @partial_guess[3] = @color_array[0]
         end 
       end
     end
@@ -82,55 +82,55 @@ class Game
   def reorder
     if @correct_color.length >= 2
       if @correct_color[@correct_color.length - 1] != 0
-        if (@partial_array.index(@color_array[0]).to_i + 1) <= (3 - @final_array.compact.length.to_i)
-          @partial_array[(@partial_array.index(@color_array[0]).to_i + 1)] = @color_array[0]
-          @partial_array[@partial_array.index(@color_array[0]).to_i] = nil 
-        elsif @partial_array[3 - @final_array.compact.length.to_i] == @color_array[0] #(@partial_array.index(@color_array[0]).to_i - 3) < 4
-          @final_array[3 - (3 - @final_array.compact.length.to_i)] = @color_array.shift
-          @partial_array[3 - @final_array.compact.length.to_i] = nil
-          @partial_array[1] = @color_array[0] 
+        if (@partial_guess.index(@color_array[0]).to_i + 1) <= (3 - @final_guess.compact.length.to_i)
+          @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] = @color_array[0]
+          @partial_guess[@partial_guess.index(@color_array[0]).to_i] = nil 
+        elsif @partial_guess[3 - @final_guess.compact.length.to_i] == @color_array[0] #(@partial_guess.index(@color_array[0]).to_i - 3) < 4
+          @final_guess[3 - (3 - @final_guess.compact.length.to_i)] = @color_array.shift
+          @partial_guess[3 - @final_guess.compact.length.to_i] = nil
+          @partial_guess[1] = @color_array[0] 
         end
       end
     end
   end
 
   def color_fill
-    @partial_array.each_index do |index|
-      if @partial_array[index] == nil
-        if @color_array.length.to_i + @final_array.compact.length.to_i == 4
-          @partial_array[index] = ((@colors - @color_array) - @final_array)[-1]
+    @partial_guess.each_index do |index|
+      if @partial_guess[index] == nil
+        if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
+          @partial_guess[index] = ((@colors - @color_array) - @final_guess)[-1]
         elsif @correct_place.length > 5
           puts "Oops, you must have gotten confused.\nYour answers tell me that your code doesn't follow the rules."
           restart
           return       
         else
-          @partial_array[index] = @colors[@correct_place.length]
+          @partial_guess[index] = @colors[@correct_place.length]
         end
       end
     end
-    @array << @partial_array
-    @partial_array = []
+    @guess << @partial_guess
+    @partial_guess = []
   end
 
   def final_round
-    if @final_array.compact.length == 3
-      @final_array.each_index do |index|
-        if @final_array[index] == nil
-          @final_array[index] = @color_array.shift
+    if @final_guess.compact.length == 3
+      @final_guess.each_index do |index|
+        if @final_guess[index] == nil
+          @final_guess[index] = @color_array.shift
         end
       end
-      @array << @final_array
-    elsif @final_array.compact.length == 2
-      @partial_array << @final_array[0] << @final_array[1] << @final_array[2] << @final_array[3]
-      @partial_array.each_index do |index|
-        if @partial_array[index] == nil
+      @guess << @final_guess
+    elsif @final_guess.compact.length == 2
+      @partial_guess << @final_guess[0] << @final_guess[1] << @final_guess[2] << @final_guess[3]
+      @partial_guess.each_index do |index|
+        if @partial_guess[index] == nil
           x = @color_array.shift
-          @partial_array[index] = x
+          @partial_guess[index] = x
           @color_array.push(x)
         end
       end
       @color_array.rotate!
-      @array << @partial_array
+      @guess << @partial_guess
     end
   end
 
