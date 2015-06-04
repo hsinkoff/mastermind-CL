@@ -35,10 +35,14 @@ class Game
     @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
     if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
       return
-    elsif @color_array.empty?
-      @total.times do |add|
+    elsif @color_array.empty? && @count == 1
+      (@total - 1).times do |add|
         @color_array << @colors[@correct_place.length - 1] 
       end
+    elsif @color_array.empty? && @count == 0
+      @total.times do |add|
+        @color_array << @colors[@correct_place.length - 1] 
+      end  
     elsif !@color_array.empty?
       (@total - 1).times do |add|
         @color_array << @colors[@correct_place.length - 1]
@@ -47,10 +51,12 @@ class Game
   end
 
   def correct_places
+    @count = 0
     if @correct_place.length >= 2 && @color_array.length >= 1
       if @correct_color[@correct_color.length - 1] == "0"
         if @correct_place[@correct_place.length - 1] >= "1"
           @final_guess[(@guess[-1].index((@color_array[0])).to_i)] = @color_array.shift
+          @count = @count + 1
         end
       end
     end
@@ -99,10 +105,6 @@ class Game
       if @partial_guess[index] == nil
         if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
           @partial_guess[index] = ((@colors - @color_array) - @final_guess)[-1]
-        elsif @correct_place.length > 5
-          puts "Oops, you must have gotten confused.\nYour answers tell me that your code doesn't follow the rules."
-          restart
-          return       
         else
           @partial_guess[index] = @colors[@correct_place.length]
         end
@@ -113,20 +115,15 @@ class Game
   end
 
   def final_round
-    if @final_guess.compact.length == 3
-      @final_guess.each_index do |index|
-        if @final_guess[index] == nil
-          @final_guess[index] = @color_array.shift
-        end
-      end
+    if @final_guess.compact.length == 4
       @guess << @final_guess
-    elsif @final_guess.compact.length == 2
+    elsif @final_guess.compact.length == 2 && @correct_color[@correct_color.length - 1].to_i == 1
       @partial_guess << @final_guess[0] << @final_guess[1] << @final_guess[2] << @final_guess[3]
       @partial_guess.each_index do |index|
         if @partial_guess[index] == nil
-          x = @color_array.shift
-          @partial_guess[index] = x
-          @color_array.push(x)
+          @x = @color_array.shift
+          @partial_guess[index] = @x
+          @color_array.push(@x)
         end
       end
       @color_array.rotate!
@@ -144,7 +141,7 @@ class Game
     answer = $stdin.gets.chomp
     if answer == "y" || answer == "Y"
       game = Game.new
-      self.complete_game(game)
+      self.complete_game
     else
       return
     end
@@ -152,27 +149,27 @@ class Game
 
   def restart
     game = Game.new
-    self.complete_game(game)
+    self.complete_game
   end
 
-  def complete_round(game)
-    game.round
-    game.correct_places
-    game.color_check
-    game.fill_in_known
-    game.reorder
-    game.color_fill
-    game.final_round
+  def complete_round
+    self.round
+    self.correct_places
+    self.color_check
+    self.fill_in_known
+    self.reorder
+    self.color_fill
+    self.final_round
   end
 
-  def complete_game(game)
-    game.welcome
+  def complete_game
+    self.welcome
     10.times do 
-      complete_round(game)
+      complete_round
     end
-    game.game_over
+    self.game_over
   end
 end
 
 game = Game.new
-game.complete_game(game)
+game.complete_game
