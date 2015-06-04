@@ -1,14 +1,19 @@
 class Game
   def initialize
-    @colors = ["red", "green", "orange", "yellow", "blue", "purple"]
     @array =[["red","red","red","red"]]
-    @correct_place = []
-    @correct_color = []
     @final_array = [nil, nil, nil, nil]
-    @partial_array = []
+    @correct_color = []
+    @correct_place = []
     @color_array = []
+    @colors = ["red", "green", "orange", "yellow", "blue", "purple"]
+    @partial_array = []
+  end
+
+  def welcome
     puts "Welcome to Mastermind!\nPlease think of a four color code using the following colors:
-      \n#{@colors[0]}\n#{@colors[1]}\n#{@colors[2]}\n#{@colors[3]}\n#{@colors[4]}\n#{@colors[5]}\n\n"
+      \n#{@colors[0]}\n#{@colors[1]}\n#{@colors[2]}\n#{@colors[3]}\n#{@colors[4]}\n#{@colors[5]}
+      \nYou may use colors more than once.\nPress enter once you are ready to begin.\n"
+    $stdin.gets.chomp
   end
 
   def round
@@ -30,7 +35,7 @@ class Game
     @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
     if @color_array.length.to_i + @final_array.compact.length.to_i == 4
       return
-    elsif @color_array.empty? #&& @final_array.compact.length == 0
+    elsif @color_array.empty?
       @total.times do |add|
         @color_array << @colors[@correct_place.length - 1] 
       end
@@ -44,7 +49,7 @@ class Game
   def correct_places
     if @correct_place.length >= 2 && @color_array.length >= 1
       if @correct_color[@correct_color.length - 1] == "0"
-        if @correct_place[@correct_place.length - 1] >=
+        if @correct_place[@correct_place.length - 1] >= "1"
           @final_array[(@array[-1].index((@color_array[0])).to_i)] = @color_array.shift
         end
       end
@@ -72,14 +77,19 @@ class Game
         end 
       end
     end
-
   end
 
   def reorder
     if @correct_color.length >= 2
       if @correct_color[@correct_color.length - 1] != 0
-        @partial_array[(@partial_array.index(@color_array[0]).to_i + 1)] = @color_array[0]
-        @partial_array[@partial_array.index(@color_array[0]).to_i] = nil  
+        if (@partial_array.index(@color_array[0]).to_i + 1) <= (3 - @final_array.compact.length.to_i)
+          @partial_array[(@partial_array.index(@color_array[0]).to_i + 1)] = @color_array[0]
+          @partial_array[@partial_array.index(@color_array[0]).to_i] = nil 
+        elsif @partial_array[3 - @final_array.compact.length.to_i] == @color_array[0] #(@partial_array.index(@color_array[0]).to_i - 3) < 4
+          @final_array[3 - (3 - @final_array.compact.length.to_i)] = @color_array.shift
+          @partial_array[3 - @final_array.compact.length.to_i] = nil
+          @partial_array[1] = @color_array[0] 
+        end
       end
     end
   end
@@ -110,6 +120,17 @@ class Game
         end
       end
       @array << @final_array
+    elsif @final_array.compact.length == 2
+      @partial_array << @final_array[0] << @final_array[1] << @final_array[2] << @final_array[3]
+      @partial_array.each_index do |index|
+        if @partial_array[index] == nil
+          x = @color_array.shift
+          @partial_array[index] = x
+          @color_array.push(x)
+        end
+      end
+      @color_array.rotate!
+      @array << @partial_array
     end
   end
 
@@ -145,26 +166,10 @@ class Game
   end
 
   def complete_game(game)
-    #round 1
-    complete_round(game)
-    #round 2
-    complete_round(game)
-    #round 3
-    complete_round(game)
-    #round 4
-    complete_round(game)
-    #round 5
-    complete_round(game)
-    #round 6
-    complete_round(game)
-    #round 7
-    complete_round(game)
-    #round 8
-    complete_round(game)
-    #round 9
-    complete_round(game)
-    #round 10
-    complete_round(game)
+    game.welcome
+    10.times do 
+      complete_round(game)
+    end
     game.game_over
   end
 end
