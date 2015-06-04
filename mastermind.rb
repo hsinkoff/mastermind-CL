@@ -1,38 +1,19 @@
-class Game
-  def initialize
-    @guess =[["red","red","red","red"]]
-    @final_guess = [nil, nil, nil, nil]
-    @correct_color = []
-    @correct_place = []
+class MastermindEngine
+  attr_reader :correct_color, :correct_place
+  attr_accessor :guess
+
+  def initialize(correct_color, correct_place, guess)
+    @correct_color = correct_color
+    @correct_place = correct_place
     @color_array = []
     @colors = ["red", "green", "orange", "yellow", "blue", "purple"]
     @partial_guess = []
+    @guess = guess
+    @final_guess = [nil, nil, nil, nil]
   end
-
-  def welcome
-    puts "Welcome to Mastermind!\nPlease think of a four color code using the following colors:
-      \n#{@colors[0]}\n#{@colors[1]}\n#{@colors[2]}\n#{@colors[3]}\n#{@colors[4]}\n#{@colors[5]}
-      \nYou may use colors more than once.\nPress enter once you are ready to begin.\n"
-    $stdin.gets.chomp
-  end
-
-  def round
-    if @correct_place[@correct_place.length - 1] == "4"
-      return
-    end
-    puts "My guess is: #{@guess[-1][-4]}, #{@guess[-1][-3]}, #{@guess[-1][-2]}, #{@guess[-1][-1]}"
-    puts "How many are in the correct place?"
-    @correct_place << $stdin.gets.chomp.to_s
-    if @correct_place[@correct_place.length - 1] == "4"
-      return
-    else
-      puts "How many additional colors are correct?"
-      @correct_color << $stdin.gets.chomp.to_s
-    end
-  end
-
+	
   def color_check
-    @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
+     @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
     if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
       return
     elsif @color_array.empty? && @count == 1
@@ -97,11 +78,11 @@ class Game
           @partial_guess[1] = @color_array[0] 
         end
       end
-    end
+    end 
   end
 
   def color_fill
-    @partial_guess.each_index do |index|
+     @partial_guess.each_index do |index|
       if @partial_guess[index] == nil
         if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
           @partial_guess[index] = ((@colors - @color_array) - @final_guess)[-1]
@@ -131,6 +112,50 @@ class Game
     end
   end
 
+  def complete_round
+    self.correct_places
+    self.color_check
+    self.fill_in_known
+    self.reorder
+    self.color_fill
+    self.final_round
+  end
+end
+
+class MastermindRun
+  attr_accessor :correct_color, :correct_place, :guess
+
+  def initialize
+    correct_color = []
+    correct_place = []
+    @correct_color = correct_color 
+    @correct_place = correct_place
+    @guess = []
+    @guess = [["red","red","red","red"]]
+  end
+
+	def welcome
+    puts "Welcome to Mastermind!\nPlease think of a four color code using the following colors:
+      \nred\ngreen\norange\nyellow\nblue\npurple
+      \nYou may use colors more than once.\nPress enter once you are ready to begin.\n"
+    $stdin.gets.chomp
+  end
+
+  def round
+    if @correct_place[@correct_place.length - 1] == "4"
+      return
+    end
+    puts "My guess is: #{@guess[-1][-4]}, #{@guess[-1][-3]}, #{@guess[-1][-2]}, #{@guess[-1][-1]}"
+    puts "How many are in the correct place?"
+    @correct_place << $stdin.gets.chomp.to_s
+    if @correct_place[@correct_place.length - 1] == "4"
+      return
+    else
+      puts "How many additional colors are correct?"
+      @correct_color << $stdin.gets.chomp.to_s
+    end
+  end
+
   def game_over
     if @correct_place[@correct_place.length - 1] == "4"
       puts "Good Game, but I won."
@@ -141,30 +166,26 @@ class Game
     answer = $stdin.gets.chomp
     if answer == "y" || answer == "Y"
       game = Game.new
-      self.complete_game
+      game.play
     else
       return
     end
   end
 
-  def complete_round
-    self.round
-    self.correct_places
-    self.color_check
-    self.fill_in_known
-    self.reorder
-    self.color_fill
-    self.final_round
-  end
+end
 
-  def complete_game
-    self.welcome
-    10.times do 
-      complete_round
+class Game
+  def play
+    run = MastermindRun.new
+    engine = MastermindEngine.new(run.correct_color, run.correct_place, run.guess)
+    run.welcome
+    10.times do
+      run.round
+      engine.complete_round
     end
-    self.game_over
+    run.game_over
   end
 end
 
 game = Game.new
-game.complete_game
+game.play
