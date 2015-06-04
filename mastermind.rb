@@ -147,11 +147,6 @@ class Game
     end
   end
 
-  def restart
-    game = Game.new
-    self.complete_game
-  end
-
   def complete_round
     self.round
     self.correct_places
