@@ -1,15 +1,14 @@
-require "./mastermind_engine.rb"
-require "minitest/autorun"
+require_relative "mastermind_play.rb"
 
-class TestMastermindEngine < Minitest::Test
+require "test/unit"
 
-	engine = Engine.new()
+class TestMastermindEngine < Test::Unit:TestCase
 
 	def color_check_tests
 		@total = 2
 		@color_array = ["blue"]
 		@colors = ["blue", "red"]
-		assert_equal(["blue", "red"], engine.color_check )
+		assert_equal(["blue", "red"], Engine.new().color_check )
 
 	end
 

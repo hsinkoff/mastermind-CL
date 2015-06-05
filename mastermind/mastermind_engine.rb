@@ -18,15 +18,11 @@ class MastermindEngine
     @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
     if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
       return
-    elsif @color_array.empty? && @count == 1
-      (@total - 1).times do |add|
-        @color_array << @colors[@correct_place.length - 1] 
-      end
-    elsif @color_array.empty? && @count == 0
+    elsif (@color_array.empty? && @guess[-1].uniq.length == 1) || @guess[-1].uniq.length == 1
       @total.times do |add|
-        @color_array << @colors[@correct_place.length - 1] 
-      end  
-    elsif !@color_array.empty?
+        @color_array << @colors[@correct_place.length - 1]
+      end
+    else
       (@total - 1).times do |add|
         @color_array << @colors[@correct_place.length - 1]
       end
@@ -34,12 +30,10 @@ class MastermindEngine
   end
 
   def correct_places
-    @count = 0
     if @correct_place.length >= 2 && @color_array.length >= 1
       if @correct_color[@correct_color.length - 1] == "0"
         if @correct_place[@correct_place.length - 1] >= "1"
-          @final_guess[(@guess[-1].index((@color_array[0])).to_i)] = @color_array.shift
-          @count = @count + 1
+          @final_guess[(@guess[-1].index(@color_array[0]).to_i)] = @color_array.shift
         end
       end
     end
@@ -52,7 +46,7 @@ class MastermindEngine
       end
     end
     if !@color_array.empty?
-      if @guess[-1].include?(@color_array[0])
+      if @guess[-1].include?(@color_array[0]) && !@final_guess.include?(@color_array[0])
         @partial_guess[(@guess[-1].index(@color_array[0]))] = @color_array[0]
       else
         if @partial_guess[0] == nil
@@ -100,13 +94,12 @@ class MastermindEngine
   def final_round
     if @final_guess.compact.length == 4
       @guess << @final_guess
-    elsif @final_guess.compact.length == 2 && @correct_color[@correct_color.length - 1].to_i == 1
+    elsif @final_guess.compact.length == 2 && @correct_color[@correct_color.length - 1].to_i >= 1
       @partial_guess << @final_guess[0] << @final_guess[1] << @final_guess[2] << @final_guess[3]
       @partial_guess.each_index do |index|
         if @partial_guess[index] == nil
-          @x = @color_array.shift
-          @partial_guess[index] = @x
-          @color_array.push(@x)
+          @partial_guess[index] = @color_array.shift
+          @color_array << (@partial_guess[index])
         end
       end
       @color_array.rotate!
