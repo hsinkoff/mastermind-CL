@@ -46,8 +46,14 @@ class MastermindEngine
       end
     end
     if !@color_array.empty?
-      if @guess[-1].include?(@color_array[0]) && !@final_guess.include?(@color_array[0]) && @final_guess[(@guess[-1].index(@color_array[0]))] == nil
+      if @guess[-1].include?(@color_array[0]) && @final_guess[(@guess[-1].index(@color_array[0]))] == nil
         @partial_guess[(@guess[-1].index(@color_array[0]))] = @color_array[0]
+      elsif @guess[-1].include?(@color_array[0]) && @final_guess[(@guess[-1].index(@color_array[0]))] != nil
+        if (@guess[-1].index(@color_array[0]) + 1) < 4
+          @partial_guess[(@guess[-1].index(@color_array[0]) + 1)] = @color_array[0]
+        else 
+          @partial_guess[(@guess[-1].index(@color_array[0]) - 1)] = @color_array[0]
+        end
       else
         if @partial_guess[0] == nil
           @partial_guess[0] = @color_array[0]
@@ -65,7 +71,7 @@ class MastermindEngine
   def reorder
     if @correct_color.length >= 2
       if @correct_color[@correct_color.length - 1] != 0
-        if (@partial_guess.index(@color_array[0]).to_i + 1) <= (3 - @final_guess.compact.length.to_i)
+        if (@partial_guess.index(@color_array[0]).to_i + 1) <= (3 - @final_guess.compact.length.to_i) && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] == nil
           @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] = @color_array[0]
           @partial_guess[@partial_guess.index(@color_array[0]).to_i] = nil 
         elsif @partial_guess[3 - @final_guess.compact.length.to_i] == @color_array[0]
@@ -94,7 +100,7 @@ class MastermindEngine
   def final_round
     if @final_guess.compact.length == 4
       @guess << @final_guess
-    elsif @final_guess.compact.length == 2 && @correct_color[@correct_color.length - 1].to_i >= 1
+    elsif @final_guess.compact.length >= 2 && @correct_color[@correct_color.length - 1].to_i >= 1
       @partial_guess << @final_guess[0] << @final_guess[1] << @final_guess[2] << @final_guess[3]
       @partial_guess.each_index do |index|
         if @partial_guess[index] == nil
