@@ -46,7 +46,7 @@ class MastermindEngine
       end
     end
     if !@color_array.empty?
-      if @guess[-1].include?(@color_array[0]) && !@final_guess.include?(@color_array[0])
+      if @guess[-1].include?(@color_array[0]) && !@final_guess.include?(@color_array[0]) && @final_guess[(@guess[-1].index(@color_array[0]))] == nil
         @partial_guess[(@guess[-1].index(@color_array[0]))] = @color_array[0]
       else
         if @partial_guess[0] == nil
@@ -68,7 +68,7 @@ class MastermindEngine
         if (@partial_guess.index(@color_array[0]).to_i + 1) <= (3 - @final_guess.compact.length.to_i)
           @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] = @color_array[0]
           @partial_guess[@partial_guess.index(@color_array[0]).to_i] = nil 
-        elsif @partial_guess[3 - @final_guess.compact.length.to_i] == @color_array[0] #(@partial_guess.index(@color_array[0]).to_i - 3) < 4
+        elsif @partial_guess[3 - @final_guess.compact.length.to_i] == @color_array[0]
           @final_guess[3 - (3 - @final_guess.compact.length.to_i)] = @color_array.shift
           @partial_guess[3 - @final_guess.compact.length.to_i] = nil
           @partial_guess[1] = @color_array[0] 
@@ -78,7 +78,7 @@ class MastermindEngine
   end
 
   def color_fill
-     @partial_guess.each_index do |index|
+    @partial_guess.each_index do |index|
       if @partial_guess[index] == nil
         if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
           @partial_guess[index] = ((@colors - @color_array) - @final_guess)[-1]
