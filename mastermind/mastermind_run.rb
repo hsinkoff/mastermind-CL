@@ -12,13 +12,15 @@ class MastermindRun
     @guess = [["red","red","red","red"]]
   end
 
-	def welcome
+	# introduces game to user
+  def welcome
     puts "Welcome to Mastermind!\nPlease think of a four color code using the following colors:
       \nred\ngreen\norange\nyellow\nblue\npurple
       \nYou may use colors more than once.\nPress enter once you are ready to begin.\n"
     $stdin.gets.chomp
   end
 
+  # outputs guess and inputs information from user
   def round
     if @correct_place[@correct_place.length - 1] == "4"
       return
@@ -34,6 +36,7 @@ class MastermindRun
     end
   end
 
+  # ends game and allows user to play again
   def game_over
     if @correct_place[@correct_place.length - 1] == "4"
       puts "Good Game, but I won."

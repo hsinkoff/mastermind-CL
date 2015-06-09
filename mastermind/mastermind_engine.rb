@@ -14,6 +14,8 @@ class MastermindEngine
     @final_guess = [nil, nil, nil, nil]
   end
 	
+  # checks if any colors are correct
+  # adds them to the color_array
   def color_check
     @total = @correct_place[@correct_place.length - 1].to_i + @correct_color[@correct_color.length - 1].to_i
     if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
@@ -29,6 +31,8 @@ class MastermindEngine
     end
   end
 
+  # checks if any pieces are in their correct place
+  # adds them to the final_guess
   def correct_places
     if @correct_place.length >= 2 && @color_array.length >= 1
       if @correct_color[@correct_color.length - 1] == "0"
@@ -39,6 +43,8 @@ class MastermindEngine
     end
   end
 
+  # creates partial_guess (the next guess)
+  # adds in one known color whose position is unknown
   def fill_in_known
     if @partial_guess.length < 4
       (4 - @partial_guess.length).times do |add|
@@ -68,6 +74,7 @@ class MastermindEngine
     end
   end
 
+  # moves known color to next position if necessary
   def reorder
     if @correct_color.length >= 2
       if @correct_color[@correct_color.length - 1] != 0
@@ -83,6 +90,8 @@ class MastermindEngine
     end 
   end
 
+  # fills in partial_guess with next color
+  # adds partial_guess onto the end of guess and clears partial_guess
   def color_fill
     @partial_guess.each_index do |index|
       if @partial_guess[index] == nil
@@ -97,6 +106,8 @@ class MastermindEngine
     @partial_guess = []
   end
 
+  # runs if game is near the end
+  # fills in partial_guess with final_guess
   def final_round
     if @final_guess.compact.length == 4
       @guess << @final_guess
@@ -113,6 +124,7 @@ class MastermindEngine
     end
   end
 
+  # runs through methods once
   def complete_round
     self.correct_places
     self.color_check

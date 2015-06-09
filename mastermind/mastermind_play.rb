@@ -2,6 +2,7 @@ require "./mastermind_engine.rb"
 require "./mastermind_run.rb"
 
 class Game
+  # sets up and runs one complete game
   def play
     run = MastermindRun.new
     engine = MastermindEngine.new(run.correct_color, run.correct_place, run.guess)
