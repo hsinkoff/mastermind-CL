@@ -96,7 +96,7 @@ class MastermindEngine
     if @final_guess.compact.length == 4
       @guess << @final_guess
       return
-    elsif @final_guess.compact.length >= 2 && (@correct_color[@correct_color.length - 1].to_i >= 1 || @color_array.length >= 1)
+    elsif @final_guess.compact.length >= 2 && (@correct_color[@correct_color.length - 1].to_i == 2 || @color_array.length == 2)
       @partial_guess << @final_guess[0] << @final_guess[1] << @final_guess[2] << @final_guess[3]
       @partial_guess.each_index do |index|
         if @partial_guess[index] == nil
