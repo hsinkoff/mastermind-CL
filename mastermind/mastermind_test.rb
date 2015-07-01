@@ -17,10 +17,5 @@ class TestMastermind < Minitest::Test
     game = MastermindEngine.new([0], [0], [["red", "red", "red", "red"]])
     game.correct_places
     assert_equal [["red", "red", "red", "red"]], game.guess
-
-    #game1 = MastermindEngine.new([1, 0], [0, 1], [["red", "red", "red", "red"], ["green", "blue", "blue", "blue"]])
-    #game1.color_array = ["green"]
-    #game1.correct_places
-    #assert_equal [], game1.color_array
   end
 end
