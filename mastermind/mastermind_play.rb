@@ -8,7 +8,7 @@ class Game
   end
   
   def play
-    @run.welcome
+    @run.welcome_message
     10.times do
       @run.round
       @engine.complete_round
