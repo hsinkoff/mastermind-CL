@@ -22,23 +22,23 @@ class MastermindRun
 
   # outputs guess and inputs information from user
   def round
-    if @correct_place[@correct_place.length - 1] == "4"
+    if correct_place[correct_place.length - 1] == "4"
       return
     end
-    puts "My guess is: #{@guess[-1][-4]}, #{@guess[-1][-3]}, #{@guess[-1][-2]}, #{@guess[-1][-1]}"
+    puts "My guess is: #{guess[-1][-4]}, #{guess[-1][-3]}, #{guess[-1][-2]}, #{guess[-1][-1]}"
     puts "How many are in the correct place?"
-    @correct_place << $stdin.gets.chomp.to_s
-    if @correct_place[@correct_place.length - 1] == "4"
+    correct_place << $stdin.gets.chomp.to_s
+    if correct_place[correct_place.length - 1] == "4"
       return
     else
       puts "How many additional colors are correct?"
-      @correct_color << $stdin.gets.chomp.to_s
+      correct_color << $stdin.gets.chomp.to_s
     end
   end
 
   # ends game and allows user to play again
   def game_over
-    if @correct_place[@correct_place.length - 1] == "4"
+    if correct_place[correct_place.length - 1] == "4"
       puts "Good Game, but I won."
     else
       puts "Good Game.  You won and beat me, the computer."
