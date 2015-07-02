@@ -14,29 +14,31 @@ class MastermindEngine
     @final_guess = [nil, nil, nil, nil]
   end
 	
-  # checks if any colors are correct
-  # adds them to the color_array
-  def color_check
-    @total = correct_place[correct_place.length - 1].to_i + correct_color[correct_color.length - 1].to_i
-    if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
-      return
-    elsif (@color_array.empty? && guess[-1].uniq.length == 1) || guess[-1].uniq.length == 1
-      @total.times do |add|
-        @color_array << @colors[correct_place.length - 1]
-      end
-    else
-      (@total - 1).times do |add|
-        @color_array << @colors[correct_place.length - 1]
-      end
+  def all_colors_known?
+    @color_array.length.to_i + @final_guess.compact.length.to_i == 4
+  end
+  
+  def add_colors_to_color_array
+    @total.times do |add|
+      @color_array << @colors[correct_place.length - 1]
     end
+  end
+
+  def color_check
+    return if self.all_colors_known?
+    @total = correct_place[-1].to_i + correct_color[-1].to_i
+    if guess[-1].uniq.length != 1
+      @total = @total - 1
+    end
+    self.add_colors_to_color_array
   end
 
   # checks if any pieces are in their correct place
   # adds them to the final_guess
   def correct_places
     if correct_place.length >= 2 && @color_array.length >= 1
-      if correct_color[correct_color.length - 1] == "0"
-        if correct_place[correct_place.length - 1] >= "1"
+      if correct_color[-1] == "0"
+        if correct_place[-1] >= "1"
           @final_guess[(guess[-1].index(@color_array[0]).to_i)] = @color_array.shift
         end
       end
@@ -78,7 +80,7 @@ class MastermindEngine
   # if known color is in last available position, adds to final_guess
   def reorder
     if correct_color.length >= 2
-      if correct_color[correct_color.length - 1] != "0"
+      if correct_color[-1] != "0"
         if ((@partial_guess.index(@color_array[0]).to_i + 1) < (3 - @final_guess.compact.length.to_i)) && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] == nil
           @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] = @color_array[0]
           @partial_guess[@partial_guess.index(@color_array[0]).to_i] = nil 
@@ -96,7 +98,7 @@ class MastermindEngine
     if @final_guess.compact.length == 4
       guess << @final_guess
       return
-    elsif @final_guess.compact.length >= 2 && (correct_color[correct_color.length - 1].to_i == 2 || @color_array.length == 2)
+    elsif @final_guess.compact.length >= 2 && (correct_color[-1].to_i == 2 || @color_array.length == 2)
       @partial_guess << @final_guess[0] << @final_guess[1] << @final_guess[2] << @final_guess[3]
       @partial_guess.each_index do |index|
         if @partial_guess[index] == nil
