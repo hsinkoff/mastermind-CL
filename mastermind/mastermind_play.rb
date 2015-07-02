@@ -12,6 +12,7 @@ class Game
       engine.complete_round
     end
     run.game_over
+    run.play_another_game
   end
 end
 
