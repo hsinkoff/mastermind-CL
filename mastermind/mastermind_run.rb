@@ -13,7 +13,7 @@ class MastermindRun
   end
 
 	# introduces game to user
-  def welcome
+  def welcome_message
     puts "Welcome to Mastermind!\nPlease think of a four color code using the following colors:
       \nred\ngreen\norange\nyellow\nblue\npurple
       \nYou may use colors more than once.\nPress enter once you are ready to begin.\n"
