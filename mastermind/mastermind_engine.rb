@@ -28,7 +28,7 @@ class MastermindEngine
   def add_colors_to_color_array
     return if self.all_colors_known?
     self.number_of_color_in_answer
-    @total.times do |add|
+    @total.times do
       @color_array << @colors[correct_place.length - 1]
     end
   end
@@ -54,22 +54,15 @@ class MastermindEngine
     if !@color_array.empty?
       if guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] == nil
         @partial_guess[(guess[-1].index(@color_array[0]))] = @color_array[0]
-      elsif guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] != nil
-        if (guess[-1].index(@color_array[0]) + 1) < 4
-          @partial_guess[(guess[-1].index(@color_array[0]) + 1)] = @color_array[0]
-        else 
-          @partial_guess[(guess[-1].index(@color_array[0]) - 1)] = @color_array[0]
-        end
+      elsif guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] != nil && (guess[-1].index(@color_array[0]) + 1) < 4 
+        @partial_guess[(guess[-1].index(@color_array[0]) + 1)] = @color_array[0]
       else
-        if @partial_guess[0] == nil
-          @partial_guess[0] = @color_array[0]
-        elsif @partial_guess[1] == nil
-          @partial_guess[1] = @color_array[0]
-        elsif @partial_guess[2] == nil
-          @partial_guess[2] = @color_array[0]
-        elsif @partial_guess[3] == nil
-          @partial_guess[3] = @color_array[0]
-        end 
+        @partial_guess.each_index do |index|
+          if @partial_guess[index] == nil
+            @partial_guess[index] = @color_array[0]
+            return
+          end
+        end
       end
     end
   end
