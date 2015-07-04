@@ -102,15 +102,11 @@ class MastermindEngine
           @color_array << (@partial_guess[index])
         end
       end
-    elsif @final_guess.compact.length == 3 && (correct_color[-1].to_i == 1 || @color_array.length == 1)
+    elsif @final_guess.compact.length == 3 && @color_array.length == 1
       @partial_guess << @final_guess[0] << @final_guess[1] << @final_guess[2] << @final_guess[3]
       @partial_guess.each_index do |index|
         if @partial_guess[index] == nil
-          if @color_array.length == 1
-            @partial_guess[index] = @color_array.shift
-          else 
-            @partial_guess[index] = @colors[(correct_color.length - 1)]
-          end
+          @partial_guess[index] = @color_array.shift
         end
       end
     end
