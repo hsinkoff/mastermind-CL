@@ -44,16 +44,13 @@ class MastermindEngine
     end
   end
 
-  # creates partial_guess (the next guess)
-  # adds in one known color whose position is unknown
   def set_up_partial_guess
-    4.times do |add|
+    4.times do
       @partial_guess << nil
     end
   end
 
-  def fill_in_known
-    self.set_up_partial_guess
+  def add_known_color
     if !@color_array.empty?
       if guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] == nil
         @partial_guess[(guess[-1].index(@color_array[0]))] = @color_array[0]
@@ -77,9 +74,7 @@ class MastermindEngine
     end
   end
 
-  # moves known color to next position if necessary
-  # if known color is in last available position, adds to final_guess
-  def reorder
+  def reorder_known_color
     if correct_color.length >= 2
       if correct_color[-1] != "0"
         if ((@partial_guess.index(@color_array[0]).to_i + 1) < (3 - @final_guess.compact.length.to_i)) && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] == nil
@@ -119,6 +114,9 @@ class MastermindEngine
         end
       end
     end
+  end
+
+  def complete_partial_guess_with_next_color
      @partial_guess.each_index do |index|
       if @partial_guess[index] == nil
         if @color_array.length.to_i + @final_guess.compact.length.to_i == 4
@@ -128,16 +126,25 @@ class MastermindEngine
         end
       end
     end
+  end
+
+  def fill_in_partial_guess
+    self.set_up_partial_guess
+    self.add_known_color
+    self.reorder_known_color
+    self.final_round
+    self.complete_partial_guess_with_next_color
+  end
+
+  def add_partial_guess_to_guess
     guess << @partial_guess
     @partial_guess = []
   end
 
-  # runs through methods once
   def complete_round
     self.correct_places
     self.add_colors_to_color_array
-    self.fill_in_known
-    self.reorder
-    self.final_round
+    self.fill_in_partial_guess
+    self.add_partial_guess_to_guess
   end
 end
