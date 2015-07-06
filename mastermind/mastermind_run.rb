@@ -12,7 +12,6 @@ class MastermindRun
     @guess = [["red","red","red","red"]]
   end
 
-	# introduces game to user
   def welcome_message
     puts "Welcome to Mastermind!\nPlease think of a four color code using the following colors:
       \nred\ngreen\norange\nyellow\nblue\npurple
