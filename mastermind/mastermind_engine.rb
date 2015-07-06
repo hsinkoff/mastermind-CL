@@ -13,6 +13,16 @@ class MastermindEngine
     @guess = guess
     @final_guess = [nil, nil, nil, nil]
   end
+
+  def complete_round
+    correct_places
+    add_colors_to_color_array
+    fill_in_partial_guess
+    last_two_rounds
+    add_next_guess_to_guess
+  end
+
+  private
 	
   def all_colors_known?
     @color_array.length.to_i + @final_guess.compact.length.to_i == 4
@@ -26,8 +36,8 @@ class MastermindEngine
   end
 
   def add_colors_to_color_array
-    return if self.all_colors_known?
-    self.number_of_color_in_answer
+    return if all_colors_known?
+    number_of_color_in_answer
     @total.times do
       @color_array << @colors[correct_place.length - 1]
     end
@@ -116,10 +126,10 @@ class MastermindEngine
   end
 
   def fill_in_partial_guess
-    self.set_up_partial_guess
-    self.add_known_color
-    self.reorder_known_color    
-    self.complete_partial_guess_with_next_color
+    set_up_partial_guess
+    add_known_color
+    reorder_known_color    
+    complete_partial_guess_with_next_color
   end
 
   def add_next_guess_to_guess
@@ -129,13 +139,5 @@ class MastermindEngine
       guess << @partial_guess
     end
     @partial_guess = []
-  end
-
-  def complete_round
-    self.correct_places
-    self.add_colors_to_color_array
-    self.fill_in_partial_guess
-    self.last_two_rounds
-    self.add_next_guess_to_guess
   end
 end

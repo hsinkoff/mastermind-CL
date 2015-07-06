@@ -20,15 +20,15 @@ class MastermindRun
   end
 
   def round
-    return if self.game_ends
-    self.current_guess
-    self.number_in_correct_place
-    return if self.game_ends    
-    self.number_of_correct_color
+    return if game_ends
+    current_guess
+    number_in_correct_place
+    return if game_ends    
+    number_of_correct_color
   end
 
   def game_over
-    if self.game_ends
+    if game_ends
       puts "Good Game, but I won."
     else
       puts "Good Game.  You won and beat me, the computer."
@@ -45,6 +45,8 @@ class MastermindRun
       return
     end
   end
+
+  private
 
   def game_ends
     correct_place[correct_place.length - 1] == "4"
