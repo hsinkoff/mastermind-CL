@@ -17,17 +17,14 @@ class MastermindColor
   def determine_colors_in_answer
     known_color_into_final_location
     add_colors_to_color_array
+    puts @color_array
   end
 
   private
 
   def known_color_into_final_location
-    if correct_color.length >= 2
-      puts guess[-1].index(@color_array[0])
-      puts guess[-2].index(@color_array[0])
-      if guess[-1].index(@color_array[0]) == guess[-2].index(@color_array[0]) && correct_color[-1] == "0"
-        @final_guess[(guess[-1].index(@color_array[0]).to_i)] = @color_array.shift
-      end
+    if correct_color.length >= 2 && @color_array[0] != nil && guess[-1].index(@color_array[0]) == guess[-2].index(@color_array[0]) && correct_color[-1] == "0"
+      @final_guess[(guess[-1].index(@color_array[0]).to_i)] = @color_array.shift
     end
   end
 
@@ -74,6 +71,7 @@ class MastermindPlacement
   def place_known_entries
     @partial_guess = []
     @partial_guess << @final_guess[0] << @final_guess[1] << @final_guess[2] << @final_guess[3]
+    puts "final guess #{@final_guess}"
   end
 
   def place_known_color
@@ -129,7 +127,7 @@ class MastermindGuess
     @partial_guess.each_index do |index|
       if @partial_guess[index] == nil
         if @final_guess.compact.length + @color_array.length == 4
-          @partial_guess[index] = (@colors - @final_guess - @color_array)[0]
+          @partial_guess[index] = (@colors - @color_array - @final_guess)[0]
         else
           @partial_guess[index] = @colors[correct_place.length]
         end
