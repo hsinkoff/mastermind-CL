@@ -38,9 +38,32 @@ class TestMastermind < Minitest::Test
     assert_equal ["red", "green", "green"], @color1.color_array
   end
 
-  def test_place_color
+  def test_find_final_location_of_colors
+    @final = MastermindFinalPlace.new([nil, nil, nil, nil],["red"],["0", "0"],[["red", "red", "red", "red"], ["red", "green", "green", "green"]])
+    @final.known_color_into_final_location
+    assert_equal ["red", nil, nil, nil], @final.final_guess
+    assert_equal [], @final.color_array
 
+    @final.color_array = ["green"]
+    @final.correct_color << "0"
+    @final.guess[-1] = ["red", "orange", "green", "orange"]
+    @final.known_color_into_final_location
+    assert_equal ["red", nil, "green", nil], @final.final_guess
+    assert_equal [], @final.color_array
 
+    @final.correct_color << "1"
+    @final.color_array = ["orange"]
+    @final.guess[-1] = ["red", "blue", "green", "orange"]
+    assert_equal ["red", nil, "green", nil], @final.final_guess
+    assert_equal ["orange"], @final.color_array
+
+    @final1 = MastermindFinalPlace.new([nil, nil, nil, nil], ["red"], ["0"], [["red", "red", "red", "red"]])
+    @final1.known_color_into_final_location
+    assert_equal [nil, nil, nil, nil], @final1.final_guess
+  end
+
+  def test_color_placement
+    
   end
 
   def test_guess_for_this_turn
