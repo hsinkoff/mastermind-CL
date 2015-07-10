@@ -49,7 +49,7 @@ class MastermindColor
  
 end
 
-class MastermindPlacement
+class MastermindColorPlacement
   attr_accessor :final_guess, :color_array, :partial_guess, :guess, :correct_color
 
   def initialize(final_guess, color_array, guess, correct_color)
@@ -103,7 +103,7 @@ class MastermindPlacement
   end
 end
 
-class MastermindGuess
+class MastermindGuessCompletion
   attr_reader :final_guess, :correct_place, :colors
   attr_accessor :color_array, :partial_guess, :guess
 
@@ -147,9 +147,9 @@ class MastermindRound
 
   def complete_round
     @color.determine_colors_in_answer
-    @placement = MastermindPlacement.new(@color.final_guess, @color.color_array, @color.guess, @color.correct_color)
+    @placement = MastermindColorPlacement.new(@color.final_guess, @color.color_array, @color.guess, @color.correct_color)
     @placement.place_color
-    @guess = MastermindGuess.new(@color.correct_place, @placement.final_guess, @placement.color_array, @placement.partial_guess, @color.guess, @color.colors)
+    @guess = MastermindGuessCompletion.new(@color.correct_place, @placement.final_guess, @placement.color_array, @placement.partial_guess, @color.guess, @color.colors)
     @guess.guess_for_this_turn
   end
 end
