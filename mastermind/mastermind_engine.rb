@@ -79,14 +79,6 @@ class MastermindColorPlacement
     @partial_guess = [nil, nil, nil, nil]
   end
 
-  def place_known_entries
-    @final_guess.each_index do |index|
-      if @final_guess[index] != nil
-        @partial_guess[index] = @final_guess[index]
-      end
-    end
-  end
-
   def place_known_color
     if !@color_array.empty?
       if guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] == nil
@@ -116,6 +108,15 @@ class MastermindColorPlacement
       @partial_guess[(@partial_guess.index(@color_array[0]).to_i)] = nil 
     end
   end
+
+  def place_known_entries
+    @final_guess.each_index do |index|
+      if @final_guess[index] != nil
+        @partial_guess[index] = @final_guess[index]
+      end
+    end
+  end
+
 end
 
 class MastermindGuessCompletion

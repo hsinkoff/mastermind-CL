@@ -63,7 +63,27 @@ class TestMastermind < Minitest::Test
   end
 
   def test_color_placement
-    
+    @placement = MastermindColorPlacement.new([nil, nil, nil, nil], ["red"], [["red", "red", "red", "red"]], ["0"])
+    @placement.place_color
+    assert_equal ["red", nil, nil, nil], @placement.partial_guess
+
+    @placement.final_guess = ["orange", nil, nil, nil]
+    @placement.place_color
+    assert_equal ["orange", "red", nil, nil], @placement.partial_guess
+
+    @placement.color_array = ["blue"]
+    @placement.place_color
+    assert_equal ["orange", "blue", nil, nil], @placement.partial_guess
+
+    @placement.guess[-1] = ["purple", "blue", "purple", "purple"]
+    @placement.correct_color << "1"
+    @placement.place_color
+    assert_equal ["orange", nil, "blue", nil], @placement.partial_guess
+
+    @placement.guess[-1] = ["purple", "purple", "blue", "purple"]
+    @placement.correct_color << "1"
+    @placement.place_color
+    assert_equal ["orange", nil, nil, "blue"], @placement.partial_guess
   end
 
   def test_guess_for_this_turn
