@@ -34,7 +34,6 @@ class MastermindColor
       @total = @total - 1
     end
   end
- 
 end
 
 class MastermindFinalPlace
@@ -79,7 +78,6 @@ class MastermindColorPlacement
     @partial_guess = [nil, nil, nil, nil]
   end
 
-  
   def place_known_color
     if !@color_array.empty?
       if guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] == nil
@@ -117,7 +115,6 @@ class MastermindColorPlacement
       end
     end
   end
-
 end
 
 class MastermindGuessCompletion
