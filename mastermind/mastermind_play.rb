@@ -4,7 +4,9 @@ require "./mastermind_run.rb"
 class Game
   def initialize
     @run = MastermindRun.new
-    @round = MastermindRound.new(@run.correct_color, @run.correct_place, @run.guess)
+    @round = MastermindRound.new(:correct_color => @run.correct_color, 
+                                 :correct_place => @run.correct_place, 
+                                 :guess => @run.guess)
   end
   
   def play

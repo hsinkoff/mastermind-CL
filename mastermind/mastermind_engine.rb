@@ -4,12 +4,12 @@ class MastermindColor
   attr_reader :correct_color, :correct_place, :guess
   attr_accessor :color_array, :final_guess, :colors
 
-  def initialize(correct_color, correct_place, guess)
-    @correct_color = correct_color
-    @correct_place = correct_place
+  def initialize(args)
+    @correct_color = args[:correct_color]
+    @correct_place = args[:correct_place]
     @color_array = []
     @colors = ["red", "green", "orange", "yellow", "blue", "purple"]
-    @guess = guess
+    @guess = args[:guess]
     @final_guess = []
     @final_guess = [nil, nil, nil, nil]
   end
@@ -41,11 +41,11 @@ class MastermindFinalPlace
   attr_accessor :final_guess, :color_array
   attr_reader :correct_color, :guess
 
-  def initialize(final_guess, color_array, correct_color, guess)
-    @final_guess = final_guess
-    @color_array = color_array
-    @correct_color = correct_color
-    @guess = guess
+  def initialize(args)
+    @final_guess = args[:final_guess]
+    @color_array = args[:color_array]
+    @correct_color = args[:correct_color]
+    @guess = args[:guess]
   end
 
   def known_color_into_final_location
@@ -58,11 +58,11 @@ end
 class MastermindColorPlacement
   attr_accessor :final_guess, :color_array, :partial_guess, :guess, :correct_color
 
-  def initialize(final_guess, color_array, guess, correct_color)
-    @final_guess = final_guess
-    @color_array = color_array
-    @guess = guess
-    @correct_color = correct_color
+  def initialize(args)
+    @final_guess = args[:final_guess]
+    @color_array = args[:color_array]
+    @guess = args[:guess]
+    @correct_color = args[:correct_color]
     @partial_guess = []
   end
 
@@ -79,6 +79,7 @@ class MastermindColorPlacement
     @partial_guess = [nil, nil, nil, nil]
   end
 
+  
   def place_known_color
     if !@color_array.empty?
       if guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] == nil
@@ -123,13 +124,13 @@ class MastermindGuessCompletion
   attr_reader :final_guess, :correct_place, :colors
   attr_accessor :color_array, :partial_guess, :guess
 
-  def initialize(correct_place, final_guess, color_array, partial_guess, guess, colors)
-    @correct_place = correct_place
-    @final_guess = final_guess
-    @color_array = color_array
-    @partial_guess = partial_guess
-    @guess = guess
-    @colors = colors
+  def initialize(args)
+    @correct_place = args[:correct_place]
+    @final_guess = args[:final_guess]
+    @color_array = args[:color_array]
+    @partial_guess = args[:partial_guess]
+    @guess = args[:guess]
+    @colors = args[:colors]
   end
 
   def guess_for_this_turn
@@ -157,17 +158,33 @@ class MastermindGuessCompletion
 end
 
 class MastermindRound
-  def initialize(correct_color, correct_place, guess)
-    @color = MastermindColor.new(correct_color, correct_place, guess)
+  def initialize(args)
+    @correct_color = args[:correct_color]
+    @correct_place = args[:correct_place]
+    @guess = args[:guess]
+    @color = MastermindColor.new(:correct_color => @correct_color,
+                                 :correct_place => @correct_place,
+                                 :guess => @guess)
   end
 
   def complete_round
     @color.add_colors_to_color_array
-    @final = MastermindFinalPlace.new(@color.final_guess, @color.color_array, @color.correct_color, @color.guess)
+    @final = MastermindFinalPlace.new(:final_guess => @color.final_guess, 
+                                      :color_array => @color.color_array, 
+                                      :correct_color => @color.correct_color, 
+                                      :guess => @color.guess)
     @final.known_color_into_final_location
-    @placement = MastermindColorPlacement.new(@final.final_guess, @final.color_array, @color.guess, @color.correct_color)
+    @placement = MastermindColorPlacement.new(:final_guess => @final.final_guess, 
+                                              :color_array => @final.color_array, 
+                                              :guess => @color.guess, 
+                                              :correct_color => @color.correct_color)
     @placement.place_color
-    @guess = MastermindGuessCompletion.new(@color.correct_place, @placement.final_guess, @placement.color_array, @placement.partial_guess, @color.guess, @color.colors)
+    @guess = MastermindGuessCompletion.new(:correct_place => @color.correct_place, 
+                                            :final_guess => @placement.final_guess, 
+                                            :color_array => @placement.color_array, 
+                                            :partial_guess => @placement.partial_guess, 
+                                            :guess => @color.guess, 
+                                            :colors => @color.colors)
     @guess.guess_for_this_turn
   end
 end
