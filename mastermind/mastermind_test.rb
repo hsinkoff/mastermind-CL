@@ -87,6 +87,17 @@ class TestMastermind < Minitest::Test
   end
 
   def test_guess_for_this_turn
+    @guess = MastermindGuessCompletion.new([0], [nil, nil, nil, nil], ["red"], [nil, nil, nil, nil], [["red", "red", "red", "red"]], ["red", "orange", "green"])
+    @guess.guess_for_this_turn
+    assert_equal ["orange", "orange", "orange", "orange"], @guess.partial_guess
 
+    @guess.correct_place << "1"
+    @guess.partial_guess = ["red", nil, nil, nil]
+    @guess.guess_for_this_turn
+    assert_equal ["red", "green", "green", "green"], @guess.partial_guess
+
+    @guess1 = MastermindGuessCompletion.new([0], ["red", nil, "green", nil], ["orange", "orange"], ["red", nil, "green", nil], [["orange", "orange", "orange", "orange"]], ["red", "orange", "green", "blue"])
+    @guess1.guess_for_this_turn
+    assert_equal ["red", "blue", "green", "blue"], @guess1.partial_guess
   end
 end
