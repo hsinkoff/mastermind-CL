@@ -47,9 +47,26 @@ class MastermindFinalPlace
     @guess = args[:guess]
   end
 
+  def final_placement
+    known_color_into_final_location
+    final_placement_known_immediately
+  end
+
+  private
+
   def known_color_into_final_location
-    if correct_color[-1] == "0" && correct_color.length >= 2 && @color_array[0] != nil && guess[-1].count(@color_array[0]) == 1 
-      @final_guess[(guess[-1].index(@color_array[0]).to_i)] = @color_array.shift
+    if correct_color.length >= 2 && @color_array[0] != nil && guess[-1].count(@color_array[0]) == 1 
+      if correct_color[-1] == "0"
+        @final_guess[(guess[-1].index(@color_array[0]).to_i)] = @color_array.shift
+      elsif (guess[-1].index(@color_array[0]) + 1) == @final_guess.rindex(nil)
+        @final_guess[@final_guess.rindex(nil)] = @color_array.shift
+      end
+    end
+  end
+
+  def final_placement_known_immediately
+    if guess[-1].count(@color_array[-1]) == 3 && @correct_color[-1] >= "2"
+      @final_guess[guess[-1].index(color_array[0])] = @color_array.pop
     end
   end
 end
@@ -170,7 +187,7 @@ class MastermindRound
                                       :color_array => @color.color_array, 
                                       :correct_color => @color.correct_color, 
                                       :guess => @color.guess)
-    @final.known_color_into_final_location
+    @final.final_placement
     @placement = MastermindColorPlacement.new(:final_guess => @final.final_guess, 
                                               :color_array => @final.color_array, 
                                               :guess => @color.guess, 

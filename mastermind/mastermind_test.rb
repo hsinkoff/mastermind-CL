@@ -55,7 +55,7 @@ class TestMastermind < Minitest::Test
 #MastermindFinalPlace class tests
   def test_first_color_into_final_place
     final_place_helper
-    @final.known_color_into_final_location
+    @final.final_placement
     assert_equal ["red", nil, nil, nil], @final.final_guess
     assert_equal [], @final.color_array
   end
@@ -66,7 +66,7 @@ class TestMastermind < Minitest::Test
     @final.color_array = ["green"]
     @final.correct_color << "0"
     @final.guess[-1] = ["red", "orange", "green", "orange"]
-    @final.known_color_into_final_location
+    @final.final_placement
     assert_equal ["red", nil, "green", nil], @final.final_guess
     assert_equal [], @final.color_array
   end
@@ -86,7 +86,7 @@ class TestMastermind < Minitest::Test
                                        :color_array => ["red"], 
                                        :correct_color => ["0"], 
                                        :guess => [["red", "red", "red", "red"]])
-    @final1.known_color_into_final_location
+    @final1.final_placement
     assert_equal [nil, nil, nil, nil], @final1.final_guess
   end
 
