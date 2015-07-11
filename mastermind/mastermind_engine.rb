@@ -65,7 +65,7 @@ class MastermindFinalPlace
   end
 
   def final_placement_known_immediately
-    if guess[-1].count(@color_array[-1]) == 3 && @correct_color[-1] >= "2"
+    if guess[-1].count(@color_array[0]) == 1 && guess[-1].uniq.count == 2 && @correct_color[-1] >= "2"
       @final_guess[guess[-1].index(color_array[0])] = @color_array.pop
     end
   end
@@ -99,8 +99,6 @@ class MastermindColorPlacement
     if !@color_array.empty?
       if guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] == nil
         @partial_guess[(guess[-1].index(@color_array[0]))] = @color_array[0]
-      elsif guess[-1].include?(@color_array[0]) && @final_guess[(guess[-1].index(@color_array[0]))] != nil
-        @partial_guess[(@final_guess.index(nil))] = @color_array[0]
       else
         @partial_guess.each_index do |index|
           if @final_guess[index] == nil
@@ -113,15 +111,17 @@ class MastermindColorPlacement
   end
 
   def move_known_color
-    if correct_color.length >= 2 && correct_color[-1] != "0"
-      if (@partial_guess.index(@color_array[0]).to_i + 1) < 4 && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] == nil
-        @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] = @color_array[0]
-      elsif (@partial_guess.index(@color_array[0]).to_i + 2) < 4 && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 2)] == nil
-        @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 2)] = @color_array[0]
-      elsif (@partial_guess.index(@color_array[0]).to_i + 3) < 4 && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 3)] == nil
-        @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 3)] = @color_array[0]
+    if @partial_guess.index(@color_array[0]) == guess[-1].index(@color_array[0])
+      if correct_color.length >= 2 && correct_color[-1] != "0"
+        if (@partial_guess.index(@color_array[0]).to_i + 1) < 4 && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] == nil
+          @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 1)] = @color_array[0]
+        elsif (@partial_guess.index(@color_array[0]).to_i + 2) < 4 && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 2)] == nil
+          @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 2)] = @color_array[0]
+        elsif (@partial_guess.index(@color_array[0]).to_i + 3) < 4 && @final_guess[(@partial_guess.index(@color_array[0]).to_i + 3)] == nil
+          @partial_guess[(@partial_guess.index(@color_array[0]).to_i + 3)] = @color_array[0]
+        end
+        @partial_guess[(@partial_guess.index(@color_array[0]).to_i)] = nil 
       end
-      @partial_guess[(@partial_guess.index(@color_array[0]).to_i)] = nil 
     end
   end
 
@@ -148,11 +148,23 @@ class MastermindGuessCompletion
   end
 
   def guess_for_this_turn
+    last_two_rounds
     complete_partial_guess_with_next_color
     add_next_guess_to_guess
   end
 
   private
+
+  def last_two_rounds
+    if @final_guess.compact.length == 2 && @color_array.length == 2
+      @partial_guess.each_index do |index|
+        if @partial_guess[index] == nil
+          @partial_guess[index] = @color_array.pop
+          @color_array << @partial_guess[index]
+        end
+      end
+    end
+  end
 
   def complete_partial_guess_with_next_color
     @partial_guess.each_index do |index|
