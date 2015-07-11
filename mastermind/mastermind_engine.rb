@@ -84,8 +84,11 @@ class MastermindColorPlacement
 
   def place_color
     set_partial_guess
-    place_known_color
-    move_known_color
+    last_two_rounds
+    if !partial_full?
+      place_known_color
+      move_known_color
+    end
     place_known_entries
   end
 
@@ -93,6 +96,22 @@ class MastermindColorPlacement
 
   def set_partial_guess
     @partial_guess = [nil, nil, nil, nil]
+  end
+
+  def last_two_rounds
+    if @final_guess.compact.length == 2 && @color_array.length == 2
+      @partial_guess.each_index do |index|
+        if @final_guess[index] == nil
+          @partial_guess[index] = @color_array.shift
+          @color_array << @partial_guess[index]
+        end
+      end
+      @color_array.reverse!
+    end
+  end
+
+  def partial_full?
+    @final_guess.compact.length == 2 && @color_array.length == 2
   end
 
   def place_known_color
@@ -148,23 +167,11 @@ class MastermindGuessCompletion
   end
 
   def guess_for_this_turn
-    last_two_rounds
     complete_partial_guess_with_next_color
     add_next_guess_to_guess
   end
 
   private
-
-  def last_two_rounds
-    if @final_guess.compact.length == 2 && @color_array.length == 2
-      @partial_guess.each_index do |index|
-        if @partial_guess[index] == nil
-          @partial_guess[index] = @color_array.pop
-          @color_array << @partial_guess[index]
-        end
-      end
-    end
-  end
 
   def complete_partial_guess_with_next_color
     @partial_guess.each_index do |index|
