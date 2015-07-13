@@ -90,6 +90,24 @@ class TestMastermind < Minitest::Test
     assert_equal [nil, nil, nil, nil], @final1.final_guess
   end
 
+  def test_color_into_final_place_immediately
+    @final1 = MastermindFinalPlace.new(:final_guess => [nil, nil, nil, nil], 
+                                       :color_array => ["green", "red"], 
+                                       :correct_color => ["2"], 
+                                       :guess => [["green", "red", "red", "red"]])
+    @final1.final_placement
+    assert_equal ["red", nil, nil, nil], @final1.final_guess
+  end
+
+  def test_color_not_into_final_place_immediately
+    @final1 = MastermindFinalPlace.new(:final_guess => [nil, nil, nil, nil], 
+                                       :color_array => ["green", "red"], 
+                                       :correct_color => ["1"], 
+                                       :guess => [["green", "red", "red", "red"]])
+    @final1.final_placement
+    assert_equal [nil, nil, nil, nil], @final1.final_guess
+  end
+
 #MastermindColorPlacement class tests
   def test_color_into_place
     color_place_helper
@@ -115,6 +133,16 @@ class TestMastermind < Minitest::Test
     @placement.guess[-1] = ["purple", "purple", "blue", "purple"]
     @placement.place_color
     assert_equal ["orange", nil, nil, "blue"], @placement.partial_guess
+  end
+
+  def test_final_rounds_color_placement
+    color_place_helper
+    @placement.final_guess = ["red", nil, "blue", nil]
+    @placement.color_array = ["green", "orange"]
+    @placement.place_color
+    assert_equal ["red", "green", "blue", "orange"], @placement.partial_guess
+    @placement.place_color
+    assert_equal ["red", "orange", "blue", "green"], @placement.partial_guess
   end
 
 #MastermindGuessCompletion class tests
